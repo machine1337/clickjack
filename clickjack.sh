@@ -37,17 +37,13 @@ clear
 banner
 echo -e -n ${BLUE}"\n[+] Enter domain name (e.g http|https://target.com/) : "
 read  url
-check=$(curl -s  $url -I)
+check=$(curl -s -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" --connect-timeout 5 --head $url ) 
 echo "$check" >> temp.txt
 sami=$(cat temp.txt | egrep -w 'X-Frame-Options|Content-Security-Policy|x-frame-options|content-security-policy:' )
 
 
-if [[ $sami != '' ]];
+if [[ $sami = '' ]];
 then
-echo -e -n ${CP}"\n[ X ] $url ${CG}NOT VULNERABLE "
-
-else
-
 echo -e -n "\n[ ✔ ] ${NC}$url ${RED}VULNERABLE \n"
 sleep 1
 echo -e -n ${BLUE}"\nDo U Want To Open POC In Browser: [y/n]: "
@@ -73,6 +69,10 @@ sleep 1
               exit
      fi
 
+else
+
+
+echo -e -n ${CP}"\n[ X ] $url ${CG}NOT VULNERABLE "
 fi
 }
 
@@ -83,21 +83,21 @@ echo -e -n ${CP}"\n[+] Enter path of lists (e.g http|https://target.com/) : "
 read  urls
 for sanga in $(cat $urls);
 do
-res=$(curl -s $sanga -I)
+res=$(curl -s -H "User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/81.0" --connect-timeout 5 --head $sanga )
 echo "$res" >> temp.txt
 
 sami=$(cat temp.txt | egrep -w 'X-Frame-Options|Content-Security-Policy|x-frame-options|content-security-policy:' )
 
-if [[ $sami != '' ]];
+if [[ $sami = '' ]];
 then
 
 
-echo -e -n ${CP}"\n[ X ] ${NC}$sanga ${YELLOW}NOT VULNERABLE "
-else
 
 echo -e -n ${BLUE2}"\n[ ✔ ] ${CG}$sanga ${RED}VULNERABLE \n" 
 echo "$sanga" >> vulnerable_urls.txt
+else
 
+echo -e -n ${CP}"\n[ X ] ${NC}$sanga ${YELLOW}NOT VULNERABLE "
 fi
 
 done
