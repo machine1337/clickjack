@@ -57,7 +57,7 @@ if [ -f poc.html ];
 then
 cat poc.html | sed "s|vuln|$url|" >> vuln.html
 open vuln.html
-
+rm temp.txt
 
 else
  echo -e -n ${RED}"[ X ] POC File Not Found! Exiting"    
@@ -65,6 +65,8 @@ else
 fi
 elif [ $back_press = "n" ]; then
 echo -e -n ${CP}"[+] POC Saved As Vuln.html"
+rm temp.txt
+cat poc.html | sed "s|vuln|$url|" >> vuln.html
 sleep 1
               exit
      fi
